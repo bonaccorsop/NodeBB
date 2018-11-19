@@ -300,6 +300,20 @@ program
 		}
 	});
 
+// Plugin Commands
+program
+	.command('cmd <plugin:command|ls> [args...]')
+	.description('Run a plugin command')
+	.action(function (command, args) {
+		require('./cmd.js').start(command, args, program);
+	});
+
+// Invalid command
+program.on('command:*', function () {
+	console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
+	process.exit(1);
+});
+
 require('./colors');
 
 if (process.argv.length === 2) {
