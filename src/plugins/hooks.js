@@ -33,11 +33,11 @@ module.exports = function (Plugins) {
 
 		var method;
 
-		if (Object.keys(Plugins.deprecatedHooks).indexOf(data.hook) !== -1) {
-			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' +
-				(Plugins.deprecatedHooks[data.hook] ?
-					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :
-					'there is no alternative.'
+		if (Object.keys(Plugins.deprecatedHooks).includes(data.hook)) {
+			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, '
+				+ (Plugins.deprecatedHooks[data.hook]
+					? 'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.'
+					: 'there is no alternative.'
 				));
 		}
 

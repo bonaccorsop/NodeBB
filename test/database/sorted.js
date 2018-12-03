@@ -139,6 +139,14 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
+
+		it('should return empty array if keys is empty array', function (done) {
+			db.getSortedSetRange([], 0, -1, function (err, data) {
+				assert.ifError(err);
+				assert.deepStrictEqual(data, []);
+				done();
+			});
+		});
 	});
 
 	describe('getSortedSetRevRange()', function () {
@@ -199,6 +207,17 @@ describe('Sorted Set methods', function () {
 				assert(Array.isArray(values));
 				assert.equal(values.length, 0);
 				done();
+			});
+		});
+
+		it('should return elements from 3 to last', function (done) {
+			db.sortedSetAdd('partialZset', [1, 2, 3, 4, 5], ['value1', 'value2', 'value3', 'value4', 'value5'], function (err) {
+				assert.ifError(err);
+				db.getSortedSetRangeByScore('partialZset', 3, 10, '-inf', '+inf', function (err, data) {
+					assert.ifError(err);
+					assert.deepStrictEqual(data, ['value4', 'value5']);
+					done();
+				});
 			});
 		});
 	});

@@ -47,7 +47,7 @@ SocketCategories.getWatchedCategories = function (socket, data, callback) {
 		},
 		function (results, next) {
 			var watchedCategories = results.categories.filter(function (category) {
-				return category && results.ignoredCids.indexOf(category.cid.toString()) === -1;
+				return category && !results.ignoredCids.includes(String(category.cid));
 			});
 
 			next(null, watchedCategories);
@@ -123,10 +123,6 @@ SocketCategories.loadMore = function (socket, data, callback) {
 	], callback);
 };
 
-SocketCategories.getPageCount = function (socket, cid, callback) {
-	categories.getPageCount(cid, socket.uid, callback);
-};
-
 SocketCategories.getTopicCount = function (socket, cid, callback) {
 	categories.getCategoryField(cid, 'topic_count', callback);
 };
@@ -192,16 +188,11 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 			categories.getCategoriesFields(cids, ['cid', 'parentCid'], next);
 		},
 		function (categoryData, next) {
-			categoryData.forEach(function (c) {
-				c.cid = parseInt(c.cid, 10);
-				c.parentCid = parseInt(c.parentCid, 10);
-			});
-
 			// filter to subcategories of cid
 			var cat;
 			do {
 				cat = categoryData.find(function (c) {
-					return cids.indexOf(c.cid) === -1 && cids.indexOf(c.parentCid) !== -1;
+					return !cids.includes(c.cid) && cids.includes(c.parentCid);
 				});
 				if (cat) {
 					cids.push(cat.cid);

@@ -64,9 +64,10 @@ mongoModule.helpers.mongo = require('./mongo/helpers');
 
 mongoModule.getConnectionString = function () {
 	var usernamePassword = '';
+	var uri = nconf.get('mongo:uri') || '';
 	if (nconf.get('mongo:username') && nconf.get('mongo:password')) {
 		usernamePassword = nconf.get('mongo:username') + ':' + encodeURIComponent(nconf.get('mongo:password')) + '@';
-	} else {
+	} else if (!uri.includes('@') || !uri.slice(uri.indexOf('://') + 3, uri.indexOf('@'))) {
 		winston.warn('You have no mongo username/password setup!');
 	}
 
@@ -77,7 +78,9 @@ mongoModule.getConnectionString = function () {
 	if (!nconf.get('mongo:port')) {
 		nconf.set('mongo:port', 27017);
 	}
-	if (!nconf.get('mongo:database')) {
+	const dbName = nconf.get('mongo:database');
+	if (dbName === undefined || dbName === '') {
+		winston.warn('You have no database name, using "nodebb"');
 		nconf.set('mongo:database', 'nodebb');
 	}
 
@@ -98,6 +101,7 @@ mongoModule.getConnectionOptions = function () {
 		reconnectTries: 3600,
 		reconnectInterval: 1000,
 		autoReconnect: true,
+		connectTimeoutMS: 90000,
 		useNewUrlParser: true,
 	};
 

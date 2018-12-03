@@ -50,7 +50,7 @@ try {
 	checkVersion('commander');
 	checkVersion('colors');
 } catch (e) {
-	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].indexOf(e.code) !== -1) {
+	if (['ENOENT', 'DEP_WRONG_VERSION', 'MODULE_NOT_FOUND'].includes(e.code)) {
 		console.warn('Dependencies outdated or not yet installed.');
 		console.log('Installing them now...\n');
 
@@ -65,7 +65,9 @@ try {
 }
 
 require('colors');
+// eslint-disable-next-line
 var nconf = require('nconf');
+// eslint-disable-next-line
 var program = require('commander');
 
 var pkg = require('../../package.json');
@@ -114,6 +116,7 @@ program
 	.action(function () {
 		require('./running').start(program);
 	});
+
 program
 	.command('slog', null, {
 		noHelp: true,
@@ -305,7 +308,7 @@ program
 	.command('cmd <plugin:command|ls> [args...]')
 	.description('Run a plugin command')
 	.action(function (command, args) {
-		require('./cmd.js').start(command, args, program);
+		require('./cmd').start(command, args, program);
 	});
 
 // Invalid command

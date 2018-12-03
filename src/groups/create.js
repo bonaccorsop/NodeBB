@@ -36,9 +36,9 @@ module.exports = function (Groups) {
 					slug: slug,
 					createtime: timestamp,
 					userTitle: data.userTitle || data.name,
+					userTitleEnabled: parseInt(data.userTitleEnabled, 10) === 1 ? 1 : 0,
 					description: data.description || '',
 					memberCount: memberCount,
-					deleted: 0,
 					hidden: isHidden ? 1 : 0,
 					system: isSystem ? 1 : 0,
 					private: isPrivate,
@@ -77,9 +77,9 @@ module.exports = function (Groups) {
 	};
 
 	function isSystemGroup(data) {
-		return data.system === true || parseInt(data.system, 10) === 1 ||
-			data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators' ||
-			Groups.isPrivilegeGroup(data.name);
+		return data.system === true || parseInt(data.system, 10) === 1
+			|| data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators'
+			|| Groups.isPrivilegeGroup(data.name);
 	}
 
 	function validateGroupName(name, callback) {
@@ -87,7 +87,7 @@ module.exports = function (Groups) {
 			return callback(new Error('[[error:group-name-too-short]]'));
 		}
 
-		if (!Groups.isPrivilegeGroup(name) && name.length > (parseInt(meta.config.maximumGroupNameLength, 10) || 255)) {
+		if (!Groups.isPrivilegeGroup(name) && name.length > meta.config.maximumGroupNameLength) {
 			return callback(new Error('[[error:group-name-too-long]]'));
 		}
 

@@ -20,7 +20,7 @@ module.exports = function (User) {
 		userData.userslug = utils.slugify(userData.username);
 		async.waterfall([
 			function (next) {
-				User.isDataValid(userData, next);
+				canQueue(userData, next);
 			},
 			function (next) {
 				User.hashPassword(userData.password, next);
@@ -45,6 +45,31 @@ module.exports = function (User) {
 			},
 		], callback);
 	};
+
+	function canQueue(userData, callback) {
+		async.waterfall([
+			function (next) {
+				User.isDataValid(userData, next);
+			},
+			function (next) {
+				db.getSortedSetRange('registration:queue', 0, -1, next);
+			},
+			function (usernames, next) {
+				if (usernames.includes(userData.username)) {
+					return next(new Error('[[error:username-taken]]'));
+				}
+				const keys = usernames.filter(Boolean).map(username => 'registration:queue:name:' + username);
+				db.getObjectsFields(keys, ['email'], next);
+			},
+			function (data, next) {
+				const emails = data.map(data => data && data.email);
+				if (emails.includes(userData.email)) {
+					return next(new Error('[[error:email-taken]]'));
+				}
+				next();
+			},
+		], callback);
+	}
 
 	function sendNotificationToAdmins(username, callback) {
 		async.waterfall([
@@ -219,11 +244,11 @@ module.exports = function (User) {
 			function (next) {
 				request({
 					method: 'get',
-					url: 'http://api.stopforumspam.org/api' +
-						'?ip=' + encodeURIComponent(user.ip) +
-						'&email=' + encodeURIComponent(user.email) +
-						'&username=' + encodeURIComponent(user.username) +
-						'&f=json',
+					url: 'http://api.stopforumspam.org/api'
+						+ '?ip=' + encodeURIComponent(user.ip)
+						+ '&email=' + encodeURIComponent(user.email)
+						+ '&username=' + encodeURIComponent(user.username)
+						+ '&f=json',
 					json: true,
 				}, next);
 			},

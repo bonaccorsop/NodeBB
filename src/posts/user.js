@@ -65,14 +65,14 @@ module.exports = function (Posts) {
 					userData.userslug = userData.userslug || '';
 					userData.reputation = userData.reputation || 0;
 					userData.postcount = userData.postcount || 0;
-					userData.banned = parseInt(userData.banned, 10) === 1;
+					userData.banned = userData.banned === 1;
 					userData.picture = userData.picture || '';
 					userData.status = user.getStatus(userData);
 					userData.signature = validator.escape(String(userData.signature || ''));
 					userData.fullname = userSettings[index].showfullname ? validator.escape(String(userData.fullname || '')) : undefined;
 					userData.selectedGroups = [];
 
-					if (parseInt(meta.config.hideFullname, 10) === 1) {
+					if (meta.config.hideFullname) {
 						userData.fullname = undefined;
 					}
 				});
@@ -88,7 +88,7 @@ module.exports = function (Posts) {
 									groups.isMemberOfGroups(userData.uid, userData.groupTitleArray, next);
 								},
 								signature: function (next) {
-									if (!userData.signature || !canUseSignature || parseInt(meta.config.disableSignatures, 10) === 1) {
+									if (!userData.signature || !canUseSignature || meta.config.disableSignatures) {
 										userData.signature = '';
 										return next();
 									}
@@ -144,8 +144,8 @@ module.exports = function (Posts) {
 	};
 
 	Posts.isModerator = function (pids, uid, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, pids.map(function () { return false; }));
+		if (parseInt(uid, 10) <= 0) {
+			return setImmediate(callback, null, pids.map(() => false));
 		}
 		Posts.getCidsByPids(pids, function (err, cids) {
 			if (err) {

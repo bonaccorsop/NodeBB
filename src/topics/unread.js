@@ -60,8 +60,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.unreadCutoff = function () {
-		var cutoff = parseInt(meta.config.unreadCutoff, 10) || 2;
-		return Date.now() - (cutoff * 86400000);
+		return Date.now() - (meta.config.unreadCutoff * 86400000);
 	};
 
 	Topics.getUnreadTids = function (params, callback) {
@@ -224,7 +223,7 @@ module.exports = function (Topics) {
 							tidsByFilter.watched.push(topic.tid);
 						}
 
-						if (parseInt(topic.postcount, 10) <= 1) {
+						if (topic.postcount <= 1) {
 							counts.unreplied += 1;
 							tidsByFilter.unreplied.push(topic.tid);
 						}
@@ -465,9 +464,9 @@ module.exports = function (Topics) {
 			function (results, next) {
 				var cutoff = Topics.unreadCutoff();
 				var result = tids.map(function (tid, index) {
-					var read = !results.tids_unread[index] &&
-						(results.topicScores[index] < cutoff ||
-						!!(results.userScores[index] && results.userScores[index] >= results.topicScores[index]));
+					var read = !results.tids_unread[index]
+						&& (results.topicScores[index] < cutoff
+						|| !!(results.userScores[index] && results.userScores[index] >= results.topicScores[index]));
 					return { tid: tid, read: read, index: index };
 				});
 

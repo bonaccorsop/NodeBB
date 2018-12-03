@@ -19,7 +19,7 @@ var sitemap = {
 };
 
 sitemap.render = function (callback) {
-	var topicsPerPage = parseInt(meta.config.sitemapTopics, 10) || 500;
+	var topicsPerPage = meta.config.sitemapTopics;
 	var returnData = {
 		url: nconf.get('url'),
 		topics: [],
@@ -42,8 +42,8 @@ sitemap.render = function (callback) {
 
 sitemap.getPages = function (callback) {
 	if (
-		sitemap.maps.pages &&
-		Date.now() < parseInt(sitemap.maps.pages.cacheSetTimestamp, 10) + parseInt(sitemap.maps.pages.cacheResetPeriod, 10)
+		sitemap.maps.pages
+		&& Date.now() < parseInt(sitemap.maps.pages.cacheSetTimestamp, 10) + parseInt(sitemap.maps.pages.cacheResetPeriod, 10)
 	) {
 		return sitemap.maps.pages.toXML(callback);
 	}
@@ -82,8 +82,8 @@ sitemap.getPages = function (callback) {
 
 sitemap.getCategories = function (callback) {
 	if (
-		sitemap.maps.categories &&
-		Date.now() < parseInt(sitemap.maps.categories.cacheSetTimestamp, 10) + parseInt(sitemap.maps.categories.cacheResetPeriod, 10)
+		sitemap.maps.categories
+		&& Date.now() < parseInt(sitemap.maps.categories.cacheSetTimestamp, 10) + parseInt(sitemap.maps.categories.cacheResetPeriod, 10)
 	) {
 		return sitemap.maps.categories.toXML(callback);
 	}
@@ -119,13 +119,13 @@ sitemap.getTopicPage = function (page, callback) {
 		return callback();
 	}
 
-	var numTopics = parseInt(meta.config.sitemapTopics, 10) || 500;
+	var numTopics = meta.config.sitemapTopics;
 	var min = (parseInt(page, 10) - 1) * numTopics;
 	var max = min + numTopics;
 
 	if (
-		sitemap.maps.topics[page - 1] &&
-		Date.now() < parseInt(sitemap.maps.topics[page - 1].cacheSetTimestamp, 10) + parseInt(sitemap.maps.topics[page - 1].cacheResetPeriod, 10)
+		sitemap.maps.topics[page - 1]
+		&& Date.now() < parseInt(sitemap.maps.topics[page - 1].cacheSetTimestamp, 10) + parseInt(sitemap.maps.topics[page - 1].cacheResetPeriod, 10)
 	) {
 		return sitemap.maps.topics[page - 1].toXML(callback);
 	}
