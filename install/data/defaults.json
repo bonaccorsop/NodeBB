@@ -66,6 +66,7 @@
     "reputation:disabled": 0,
     "downvote:disabled": 0,
     "disableSignatures": 0,
+    "min:rep:downvote": 0,
     "min:rep:flag": 0,
     "min:rep:profile-picture": 0,
     "min:rep:cover-picture": 0,
@@ -91,6 +92,7 @@
     "userSearchResultsPerPage": 50,
     "maximumGroupNameLength": 255,
     "preventTopicDeleteAfterReplies": 0,
+    "feeds:disableSitemap": 0,
     "sitemapTopics": 500,
     "maintenanceMode": 0,
     "votesArePublic": 0,
@@ -113,5 +115,6 @@
     "eventLoopCheckEnabled": 1,
     "eventLoopLagThreshold": 100,
     "eventLoopInterval": 500,
-    "onlineCutoff": 30
+    "onlineCutoff": 30,
+    "timeagoCutoff": 30
 }

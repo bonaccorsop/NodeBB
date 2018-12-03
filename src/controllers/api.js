@@ -40,6 +40,7 @@ apiController.loadConfig = function (req, callback) {
 	config.disableChatMessageEditing = meta.config.disableChatMessageEditing === 1;
 	config.maximumChatMessageLength = meta.config.maximumChatMessageLength || 1000;
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
+	config.socketioOrigins = nconf.get('socket.io:origins');
 	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
 	config.reconnectionDelay = meta.config.reconnectionDelay || 1500;
@@ -97,7 +98,6 @@ apiController.loadConfig = function (req, callback) {
 			config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 			config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 			config.topicSearchEnabled = settings.topicSearchEnabled || false;
-			config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
 			config.bootswatchSkin = (meta.config.disableCustomUserSkins !== 1 && settings.bootswatchSkin && settings.bootswatchSkin !== '') ? settings.bootswatchSkin : '';
 			plugins.fireHook('filter:config.get', config, next);
 		},

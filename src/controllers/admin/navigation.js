@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-const _ = require('lodash');
 
 var navigationAdmin = require('../../navigation/admin');
 const groups = require('../../groups');
@@ -17,17 +16,23 @@ navigationController.get = function (req, res, next) {
 			}, next);
 		},
 		function (result) {
+			result.groups.sort((a, b) => b.system - a.system);
+			result.groups = result.groups.map(group => ({ name: group.name, displayName: group.displayName }));
+
 			result.admin.enabled.forEach(function (enabled, index) {
 				enabled.index = index;
 				enabled.selected = index === 0;
-				const groupData = _.cloneDeep(result.groups);
 
-				enabled.groups = groupData.map(function (group) {
-					group.selected = enabled.groups.includes(group.name);
-					return group;
+				enabled.groups = result.groups.map(function (group) {
+					return {
+						displayName: group.displayName,
+						selected: enabled.groups.includes(group.name),
+					};
 				});
+			});
 
-				enabled.groups.sort((a, b) => b.system - a.system);
+			result.admin.available.forEach(function (available) {
+				available.groups = result.groups;
 			});
 
 			result.admin.navigation = result.admin.enabled.slice();
